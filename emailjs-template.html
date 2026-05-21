@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>We received your request — Waypoint Dentistry</title>
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body  { background: #F5F0E8; font-family: 'Georgia', serif; color: #1A1A18; }
+    a     { color: #2B5F22; }
+    img   { display: block; max-width: 100%; }
+
+    /* ── Wrapper ── */
+    .wrapper {
+      max-width: 600px;
+      margin: 32px auto;
+      background: #FFFFFF;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    }
+
+    /* ── Header band ── */
+    .header {
+      background: linear-gradient(135deg, #2B5F22 0%, #3D7A33 100%);
+      padding: 36px 40px 32px;
+      text-align: center;
+    }
+
+    .header img {
+      height: 48px;
+      width: auto;
+      margin: 0 auto 18px;
+      /* make white logo visible on green */
+      filter: brightness(0) invert(1);
+    }
+
+    .header h1 {
+      font-family: 'Georgia', serif;
+      font-size: 26px;
+      font-weight: normal;
+      color: #FFFFFF;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.78);
+      font-style: italic;
+    }
+
+    /* ── Patient ID pill ── */
+    .pid-wrap {
+      background: #EBF3E8;
+      border-top: 4px solid #2B5F22;
+      padding: 20px 40px;
+      text-align: center;
+    }
+
+    .pid-label {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6B6860;
+      margin-bottom: 6px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .pid-value {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 22px;
+      font-weight: bold;
+      color: #2B5F22;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Body ── */
+    .body {
+      padding: 32px 40px;
+    }
+
+    .greeting {
+      font-size: 17px;
+      color: #1A1A18;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    .body-text {
+      font-size: 14.5px;
+      color: #6B6860;
+      line-height: 1.75;
+      margin-bottom: 24px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ── Details table ── */
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 28px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #E8E0D0;
+    }
+
+    .detail-table th {
+      background: #F5F0E8;
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 10.5px;
+      font-weight: bold;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #A8A49A;
+      font-family: 'Arial', sans-serif;
+      width: 36%;
+    }
+
+    .detail-table td {
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #2A2A28;
+      border-top: 1px solid #E8E0D0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .detail-table tr:first-child th,
+    .detail-table tr:first-child td {
+      border-top: none;
+    }
+
+    /* ── CTA button ── */
+    .cta-wrap {
+      text-align: center;
+      margin: 10px 0 28px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: #2B5F22;
+      color: #FFFFFF !important;
+      text-decoration: none;
+      padding: 13px 32px;
+      border-radius: 10px;
+      font-size: 14.5px;
+      font-weight: bold;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #EBF3E8;
+      border-left: 4px solid #2B5F22;
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+
+    .info-box p {
+      font-size: 13.5px;
+      color: #2B5F22;
+      line-height: 1.65;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ── Steps ── */
+    .steps-title {
+      font-size: 15px;
+      font-weight: normal;
+      color: #1A1A18;
+      margin-bottom: 14px;
+      font-family: 'Georgia', serif;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-num {
+      background: #2B5F22;
+      color: #fff;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Arial', sans-serif;
+      /* email client fallback — inline block */
+      line-height: 26px;
+      text-align: center;
+    }
+
+    .step-text {
+      font-size: 13.5px;
+      color: #6B6860;
+      line-height: 1.6;
+      padding-top: 4px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .step-text strong { color: #1A1A18; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #E8E0D0;
+      margin: 24px 0;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: #1A1A18;
+      padding: 24px 40px;
+      text-align: center;
+    }
+
+    .footer img {
+      height: 30px;
+      width: auto;
+      margin: 0 auto 12px;
+      filter: brightness(0) invert(1);
+      opacity: 0.65;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.40);
+      line-height: 1.7;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .footer a { color: rgba(255,255,255,0.60) !important; }
+
+    @media (max-width: 600px) {
+      .wrapper { margin: 0; border-radius: 0; }
+      .header, .body, .pid-wrap, .footer { padding-left: 22px; padding-right: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <img
+      src="https://waypointdentistry.com/wp-content/uploads/2026/03/waypoint-logo.png"
+      alt="Waypoint Dentistry"
+    />
+    <h1>We've Received<br />Your Request</h1>
+    <p>Mobile Dental Care · Washington DC Metro Area</p>
+  </div>
+
+  <!-- ── PATIENT ID ── -->
+  <div class="pid-wrap">
+    <div class="pid-label">Your Patient Reference ID</div>
+    <div class="pid-value">{{patient_id}}</div>
+  </div>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <p class="greeting">Hi {{to_name}},</p>
+
+    <p class="body-text">
+      Thank you for reaching out to Waypoint Dentistry! We've successfully received your
+      appointment request and our team is already reviewing it. Please keep your reference ID
+      handy — you may need it if you contact us before your visit.
+    </p>
+
+    <!-- Submission details -->
+    <table class="detail-table">
+      <tr>
+        <th>Service Requested</th>
+        <td>{{service}}</td>
+      </tr>
+      <tr>
+        <th>Best Call Date</th>
+        <td>{{call_date}}</td>
+      </tr>
+      <tr>
+        <th>Best Call Time</th>
+        <td>{{call_time}}</td>
+      </tr>
+      <tr>
+        <th>Your Notes</th>
+        <td>{{message}}</td>
+      </tr>
+    </table>
+
+    <!-- Info box -->
+    <div class="info-box">
+      <p>
+        ✓ &nbsp;Our team will call or email you within <strong>24 hours</strong> to confirm your
+        in-home visit and answer any questions you may have.
+      </p>
+    </div>
+
+    <!-- What happens next -->
+    <p class="steps-title">What happens next?</p>
+
+    <!-- Step 1 -->
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="38" valign="top" style="padding-bottom:12px;">
+          <div style="width:26px;height:26px;background:#2B5F22;border-radius:50%;color:#fff;font-size:12px;font-weight:bold;font-family:Arial,sans-serif;text-align:center;line-height:26px;">1</div>
+        </td>
+        <td valign="top" style="padding-bottom:12px;padding-top:4px;font-family:Arial,sans-serif;font-size:13.5px;color:#6B6860;line-height:1.6;">
+          <strong style="color:#1A1A18;">We review your request</strong> — Every submission is personally reviewed by our team within 24 hours.
+        </td>
+      </tr>
+      <tr>
+        <td width="38" valign="top" style="padding-bottom:12px;">
+          <div style="width:26px;height:26px;background:#2B5F22;border-radius:50%;color:#fff;font-size:12px;font-weight:bold;font-family:Arial,sans-serif;text-align:center;line-height:26px;">2</div>
+        </td>
+        <td valign="top" style="padding-bottom:12px;padding-top:4px;font-family:Arial,sans-serif;font-size:13.5px;color:#6B6860;line-height:1.6;">
+          <strong style="color:#1A1A18;">We reach out to you</strong> — A team member will call you at the time you specified to confirm details and answer any questions.
+        </td>
+      </tr>
+      <tr>
+        <td width="38" valign="top">
+          <div style="width:26px;height:26px;background:#2B5F22;border-radius:50%;color:#fff;font-size:12px;font-weight:bold;font-family:Arial,sans-serif;text-align:center;line-height:26px;">3</div>
+        </td>
+        <td valign="top" style="padding-top:4px;font-family:Arial,sans-serif;font-size:13.5px;color:#6B6860;line-height:1.6;">
+          <strong style="color:#1A1A18;">Your visit is confirmed</strong> — We'll schedule your in-home appointment at a date and time that works for you.
+        </td>
+      </tr>
+    </table>
+
+    <hr class="divider" />
+
+    <!-- CTA -->
+    <p class="body-text" style="text-align:center; margin-bottom:16px;">
+      Have a question right now? Reach us directly:
+    </p>
+    <div class="cta-wrap">
+      <a href="https://waypointdentistry.com/contact-2/" class="cta-btn">
+        Contact Waypoint Dentistry
+      </a>
+    </div>
+
+    <p class="body-text" style="text-align:center; font-size:13px; margin-bottom:0;">
+      Or call / text us at <a href="tel:+15168597343">(516) 859-7343</a>
+      &nbsp;|&nbsp;
+      <a href="mailto:admin@waypointdentistry.com">admin@waypointdentistry.com</a>
+    </p>
+
+  </div><!-- /body -->
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <img
+      src="https://waypointdentistry.com/wp-content/uploads/2026/03/waypoint-logo.png"
+      alt="Waypoint Dentistry"
+    />
+    <p>
+      © 2025 Waypoint Mobile Dentistry<br />
+      Washington DC Metropolitan Area
+      &nbsp;·&nbsp;
+      <a href="https://waypointdentistry.com/">waypointdentistry.com</a>
+    </p>
+    <p style="margin-top:8px; font-size:11px; opacity:0.6;">
+      You're receiving this email because you submitted a request on our booking form.<br />
+      This is an automated confirmation — please do not reply to this email directly.
+    </p>
+  </div>
+
+</div><!-- /wrapper -->
+
+</body>
+</html>
