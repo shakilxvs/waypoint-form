@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { X, PlusCircle } from 'lucide-react'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { generatePatientId, SERVICES, STATUSES, todayISO } from '../lib/utils'
+import { generatePatientId, SERVICES, TIME_SLOTS, STATUSES, todayISO } from '../lib/utils'
 
 const INIT = {
   name: '', email: '', phone: '', address: '',
-  service: '', callDate: '', callTime: '',
+  service: '', timeSlot: '',
   message: '', status: 'pending',
 }
 
@@ -29,14 +29,14 @@ export default function AddLeadModal({ onClose, onAdded }) {
         phone:       form.phone.trim(),
         address:     form.address.trim(),
         service:     form.service,
-        callDate:    form.callDate,
-        callTime:    form.callTime,
+        callDate:    form.timeSlot,
+        callTime:    '',
         message:     form.message.trim(),
         status:      form.status,
         createdAt:   Timestamp.now(),
         createdDate: todayISO(),
       })
-      onAdded({ id: ref.id, patientId: pid, ...form, createdDate: todayISO() })
+      onAdded({ id: ref.id, patientId: pid, ...form, callDate: form.timeSlot, createdDate: todayISO() })
       onClose()
     } catch (err) {
       console.error(err)
@@ -96,15 +96,12 @@ export default function AddLeadModal({ onClose, onAdded }) {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Best Call Date</label>
-              <input type="date" value={form.callDate} onChange={set('callDate')} />
-            </div>
-            <div className="form-group">
-              <label>Best Call Time</label>
-              <input type="time" value={form.callTime} onChange={set('callTime')} />
-            </div>
+          <div className="form-group">
+            <label>Best Time to Reach</label>
+            <select value={form.timeSlot} onChange={set('timeSlot')}>
+              <option value="">— Select time slot —</option>
+              {TIME_SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
           </div>
 
           <div className="form-group">
