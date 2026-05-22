@@ -478,6 +478,52 @@ select {
   .time-row { grid-template-columns: 1fr; }
 }
 
+
+/* ── Time Slot Pills ────────────────────────────────────────── */
+.slot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.slot-btn {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--text-body);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.slot-btn:hover {
+  border-color: var(--green);
+  background: #EBF3E8;
+  color: var(--green);
+}
+
+.slot-btn--active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(43,95,34,0.18);
+}
+
+.slot-btn--active:hover {
+  background: var(--green);
+  color: #fff;
+}
+
+@media (max-width: 380px) {
+  .slot-grid { grid-template-columns: 1fr; }
+}
+
 .field-hint {
   font-size: 11px;
   color: var(--text-light);
