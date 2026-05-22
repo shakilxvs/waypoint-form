@@ -37,8 +37,8 @@ export default function BookingForm() {
     const pid   = generatePatientId()
     const today = todayISO()
 
+    // ── Step 1: Firestore (critical — if this fails, we stop and show error) ──
     try {
-      // 1 ── Firestore
       await addDoc(collection(db, 'leads'), {
         patientId:   pid,
         name:        form.name.trim(),
@@ -53,9 +53,16 @@ export default function BookingForm() {
         createdAt:   Timestamp.now(),
         createdDate: today,
       })
+    } catch (firestoreErr) {
+      console.error('Firestore error:', firestoreErr)
+      alert('Something went wrong saving your request. Please try again or call us directly.')
+      setSubmitting(false)
+      return
+    }
 
-      // 2 ── EmailJS (confirmation to patient)
-      if (form.email.trim()) {
+    // ── Step 2: EmailJS — best-effort, never blocks success ──
+    if (form.email.trim()) {
+      try {
         await emailjs.send(
           process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
           process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
@@ -71,10 +78,16 @@ export default function BookingForm() {
           },
           process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
         )
+        console.log('EmailJS: confirmation sent to', form.email.trim())
+      } catch (emailErr) {
+        // Log but never show an error — lead is already saved
+        console.error('EmailJS error (non-critical):', emailErr)
       }
+    }
 
-      // 3 ── Formspree (admin notification)
-      await fetch(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT, {
+    // ── Step 3: Formspree — best-effort, never blocks success ──
+    try {
+      const res = await fetch(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
@@ -89,15 +102,21 @@ export default function BookingForm() {
           message:    form.message.trim() || '—',
         }),
       })
-
-      setPatientId(pid)
-      setSubmitted(true)
-    } catch (err) {
-      console.error('Submission error:', err)
-      alert('Something went wrong. Please try again or call us directly.')
-    } finally {
-      setSubmitting(false)
+      if (!res.ok) {
+        const body = await res.text()
+        console.error('Formspree non-OK response:', res.status, body)
+      } else {
+        console.log('Formspree: admin notification sent')
+      }
+    } catch (formspreeErr) {
+      // Log but never show an error — lead is already saved
+      console.error('Formspree error (non-critical):', formspreeErr)
     }
+
+    // ── Always show success once Firestore saved ──
+    setPatientId(pid)
+    setSubmitted(true)
+    setSubmitting(false)
   }
 
   function handleReset() {
