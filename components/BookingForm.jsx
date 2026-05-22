@@ -3,11 +3,11 @@ import { Send, Lock, ShieldCheck } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
 import { db } from '../lib/firebase'
-import { generatePatientId, SERVICES, todayISO } from '../lib/utils'
+import { generatePatientId, SERVICES, TIME_SLOTS, todayISO } from '../lib/utils'
 
 const INIT = {
   name: '', email: '', phone: '', address: '',
-  service: '', callDate: '', callTime: '', message: '',
+  service: '', timeSlot: '', message: '',
 }
 
 export default function BookingForm() {
@@ -19,12 +19,17 @@ export default function BookingForm() {
 
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
 
+  function selectSlot(slot) {
+    setForm(f => ({ ...f, timeSlot: slot }))
+    setErrors(e => ({ ...e, timeSlot: undefined }))
+  }
+
   function validate() {
     const errs = {}
-    if (!form.name.trim())    errs.name    = 'Full name is required'
-    if (!form.phone.trim())   errs.phone   = 'Phone number is required'
-    if (!form.address.trim()) errs.address = 'Service address is required'
-    if (!form.service)        errs.service = 'Please select a service'
+    if (!form.name.trim())    errs.name     = 'Full name is required'
+    if (!form.phone.trim())   errs.phone    = 'Phone number is required'
+    if (!form.address.trim()) errs.address  = 'Service address is required'
+    if (!form.service)        errs.service  = 'Please select a service'
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -37,7 +42,7 @@ export default function BookingForm() {
     const pid   = generatePatientId()
     const today = todayISO()
 
-    // ── Step 1: Firestore (critical — if this fails, we stop and show error) ──
+    // ── Step 1: Firestore (critical) ──────────────────────────────
     try {
       await addDoc(collection(db, 'leads'), {
         patientId:   pid,
@@ -46,8 +51,8 @@ export default function BookingForm() {
         phone:       form.phone.trim(),
         address:     form.address.trim(),
         service:     form.service,
-        callDate:    form.callDate,
-        callTime:    form.callTime,
+        callDate:    form.timeSlot,   // stored in callDate field for compatibility
+        callTime:    '',
         message:     form.message.trim(),
         status:      'pending',
         createdAt:   Timestamp.now(),
@@ -60,7 +65,7 @@ export default function BookingForm() {
       return
     }
 
-    // ── Step 2: EmailJS — best-effort, never blocks success ──
+    // ── Step 2: EmailJS — best-effort ─────────────────────────────
     if (form.email.trim()) {
       try {
         await emailjs.send(
@@ -71,35 +76,33 @@ export default function BookingForm() {
             to_email:   form.email.trim(),
             patient_id: pid,
             service:    form.service,
-            call_date:  form.callDate || 'To be confirmed',
-            call_time:  form.callTime || 'To be confirmed',
-            message:    form.message  || 'No additional notes',
+            call_date:  form.timeSlot || 'No preference',
+            call_time:  '',
+            message:    form.message || 'No additional notes',
             reply_to:   'admin@waypointdentistry.com',
           },
           process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
         )
         console.log('EmailJS: confirmation sent to', form.email.trim())
       } catch (emailErr) {
-        // Log but never show an error — lead is already saved
         console.error('EmailJS error (non-critical):', emailErr)
       }
     }
 
-    // ── Step 3: Formspree — best-effort, never blocks success ──
+    // ── Step 3: Formspree — best-effort ──────────────────────────
     try {
       const res = await fetch(process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          patient_id: pid,
-          name:       form.name.trim(),
-          email:      form.email.trim() || '—',
-          phone:      form.phone.trim(),
-          address:    form.address.trim(),
-          service:    form.service,
-          call_date:  form.callDate || '—',
-          call_time:  form.callTime || '—',
-          message:    form.message.trim() || '—',
+          patient_id:  pid,
+          name:        form.name.trim(),
+          email:       form.email.trim() || '—',
+          phone:       form.phone.trim(),
+          address:     form.address.trim(),
+          service:     form.service,
+          best_time:   form.timeSlot || '—',
+          message:     form.message.trim() || '—',
         }),
       })
       if (!res.ok) {
@@ -109,11 +112,10 @@ export default function BookingForm() {
         console.log('Formspree: admin notification sent')
       }
     } catch (formspreeErr) {
-      // Log but never show an error — lead is already saved
       console.error('Formspree error (non-critical):', formspreeErr)
     }
 
-    // ── Always show success once Firestore saved ──
+    // ── Always show success once Firestore saved ──────────────────
     setPatientId(pid)
     setSubmitted(true)
     setSubmitting(false)
@@ -131,7 +133,7 @@ export default function BookingForm() {
       ? <span className="field-hint" style={{ color: '#CC4444', marginTop: 3 }}>⚠ {errors[k]}</span>
       : null
 
-  // ── SUCCESS STATE ──────────────────────────────────────────────
+  // ── SUCCESS ───────────────────────────────────────────────────
   if (submitted) {
     return (
       <div className="form-card">
@@ -226,19 +228,26 @@ export default function BookingForm() {
           <FieldError k="service" />
         </div>
 
+        <hr className="form-divider" />
+
+        {/* ── Time Slots ── */}
+        <div className="sec-label">Best Time to Reach You</div>
+
         <div className="form-group">
-          <label>Best Time to Call</label>
-          <div className="time-row">
-            <input
-              type="date" value={form.callDate}
-              onChange={set('callDate')} min={todayISO()}
-            />
-            <input
-              type="time" value={form.callTime}
-              onChange={set('callTime')}
-            />
+          <label>Preferred Day &amp; Time</label>
+          <div className="slot-grid">
+            {TIME_SLOTS.map(slot => (
+              <button
+                key={slot}
+                type="button"
+                className={`slot-btn${form.timeSlot === slot ? ' slot-btn--active' : ''}`}
+                onClick={() => selectSlot(slot)}
+              >
+                {slot}
+              </button>
+            ))}
           </div>
-          <span className="field-hint">Evenings &amp; weekends available. We'll do our best to call then.</span>
+          <span className="field-hint">Optional — evenings &amp; weekends available.</span>
         </div>
 
         <hr className="form-divider" />
