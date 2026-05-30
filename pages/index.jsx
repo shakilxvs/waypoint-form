@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Home, ShieldCheck, Clock, Sparkles } from 'lucide-react'
+import { Home, ShieldCheck, Clock, Sparkles, Video } from 'lucide-react'
 import Header from '../components/Header'
 import BookingForm from '../components/BookingForm'
 import Sidebar from '../components/Sidebar'
@@ -14,7 +14,7 @@ export default function HomePage() {
     <>
       <Head>
         <title>Book a Visit — Waypoint Dentistry</title>
-        <meta name="description" content="Request an in-home dental visit from Waypoint Dentistry. Serving the Washington DC metro area including Northern Virginia and Maryland." />
+        <meta name="description" content="Request an in-home or virtual dental consultation from Waypoint Dentistry. Serving Maryland." />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <link rel="icon" href="https://waypointdentistry.com/wp-content/uploads/2026/03/waypoint-logo.png" />
       </Head>
@@ -34,10 +34,11 @@ export default function HomePage() {
           <h1>Dental Care,<br /><em>Where You Are</em></h1>
           <p className="hero-desc">
             Tell us about yourself and what you need. Our team will follow up
-            within 24 hours to confirm your in-home visit.
+            within 24 hours to confirm your appointment.
           </p>
           <div className="hero-trust">
             <div className="trust-chip"><Home size={13} /> In-home visits</div>
+            <div className="trust-chip"><Video size={13} /> Virtual Consult</div>
             <div className="trust-chip"><ShieldCheck size={13} /> Secure &amp; private</div>
             <div className="trust-chip"><Clock size={13} /> Flexible scheduling</div>
           </div>
