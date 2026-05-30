@@ -4,8 +4,8 @@ import {
 } from 'lucide-react'
 
 // Real contact info from waypointdentistry.com
-const PHONE     = '(516) 859-7343'
-const PHONE_TEL = '+15168597343'
+const PHONE     = '(301) 709-7578'
+const PHONE_TEL = '+13017097578'
 const EMAIL     = 'admin@waypointdentistry.com'
 
 export default function Sidebar() {
@@ -15,7 +15,7 @@ export default function Sidebar() {
       {/* ── Direct Contact ── */}
       <div className="s-card">
         <h3>Prefer to reach us first?</h3>
-        <p>Our team is available by phone, text, or email — happy to answer questions before you book.</p>
+        <p>Our team is available by phone, text, or email — happy to answer questions before you connect.</p>
         <div className="contact-btns">
           <a href={`tel:${PHONE_TEL}`} className="cta-btn call">
             <Phone size={15} /> Call {PHONE}
@@ -51,7 +51,7 @@ export default function Sidebar() {
             <div className="step-dot"><CalendarCheck size={13} /></div>
             <div>
               <div className="step-title">Your visit is confirmed</div>
-              <div className="step-desc">In-home appointment scheduled at a time that works for you.</div>
+              <div className="step-desc">In-person or virtual appointment scheduled at a time that works for you.</div>
             </div>
           </div>
         </div>
