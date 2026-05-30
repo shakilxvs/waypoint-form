@@ -19,11 +19,6 @@ export default function BookingForm() {
 
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
 
-  function selectSlot(slot) {
-    setForm(f => ({ ...f, timeSlot: slot }))
-    setErrors(e => ({ ...e, timeSlot: undefined }))
-  }
-
   function validate() {
     const errs = {}
     if (!form.name.trim())    errs.name     = 'Full name is required'
@@ -144,8 +139,8 @@ export default function BookingForm() {
           <h2>Request Received!</h2>
           <div className="success-pid">{patientId}</div>
           <p>
-            Thank you, <strong>{form.name.split(' ')[0]}</strong>. A member of our team will
-            review your request and contact you within 24 hours to confirm your in-home visit.
+            Thank you, <strong>{form.name.split(' ')[0]}</strong>. Our team has received your request
+            and will reach out within 24 hours to confirm your consultation time and share next steps.
             {form.email && <> A confirmation email is on its way to <strong>{form.email}</strong>.</>}
           </p>
           <button className="btn-reset" onClick={handleReset}>
@@ -160,7 +155,7 @@ export default function BookingForm() {
   return (
     <div className="form-card">
       <div className="form-card-head">
-        <h2>Request a Visit</h2>
+        <h2>Connect with Our Team</h2>
         <p>Fill in your details — we'll be in touch within 24 hours.</p>
       </div>
 
@@ -207,7 +202,7 @@ export default function BookingForm() {
             value={form.address} onChange={set('address')}
             style={errors.address ? { borderColor: '#CC4444' } : {}}
           />
-          <span className="field-hint">We serve the Washington DC metro area — MD &amp; Northern Virginia.</span>
+          <span className="field-hint">We serve Maryland — confirm your county or city.</span>
           <FieldError k="address" />
         </div>
 
@@ -234,19 +229,20 @@ export default function BookingForm() {
         <div className="sec-label">Best Time to Reach You</div>
 
         <div className="form-group">
-          <label>Preferred Day &amp; Time</label>
-          <div className="slot-grid">
+          <label htmlFor="f-timeslot">Preferred Day &amp; Time</label>
+          <select
+            id="f-timeslot"
+            value={form.timeSlot}
+            onChange={e => {
+              setForm(f => ({ ...f, timeSlot: e.target.value }))
+              setErrors(err => ({ ...err, timeSlot: undefined }))
+            }}
+          >
+            <option value="">— Select a time preference —</option>
             {TIME_SLOTS.map(slot => (
-              <button
-                key={slot}
-                type="button"
-                className={`slot-btn${form.timeSlot === slot ? ' slot-btn--active' : ''}`}
-                onClick={() => selectSlot(slot)}
-              >
-                {slot}
-              </button>
+              <option key={slot} value={slot}>{slot}</option>
             ))}
-          </div>
+          </select>
           <span className="field-hint">Optional — evenings &amp; weekends available.</span>
         </div>
 
