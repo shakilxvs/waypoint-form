@@ -16,7 +16,7 @@ export default function Header() {
         />
         <div className="logo-text">
           <span className="logo-name">Waypoint Dentistry</span>
-          <span className="logo-tag">Mobile Dental Care · Washington DC</span>
+          <span className="logo-tag">Mobile Dental Care · Maryland</span>
         </div>
       </a>
 
