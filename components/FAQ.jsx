@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react'
 const FAQS = [
   {
     q: "What areas do you serve?",
-    a: "We serve the Washington DC metropolitan region, including Northern Virginia (Arlington, Alexandria, McLean) and Maryland (Bethesda, Silver Spring, Rockville, and more). Contact us to confirm your exact location.",
+    a: "We serve Maryland, including Montgomery County, Prince George's County, Howard County, Anne Arundel County, and surrounding areas. Contact us to confirm your exact location.",
   },
   {
     q: "What equipment do you bring?",
