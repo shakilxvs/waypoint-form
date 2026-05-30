@@ -14,7 +14,7 @@ export default function Footer() {
         <a href="https://waypointdentistry.com/" target="_blank" rel="noopener noreferrer">
           waypointdentistry.com
         </a>
-        &nbsp;·&nbsp;Washington DC Metropolitan Area
+        &nbsp;·&nbsp;Maryland
       </p>
 
       <div className="footer-divider" />
